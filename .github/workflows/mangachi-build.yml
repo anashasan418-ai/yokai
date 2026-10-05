@@ -1,0 +1,57 @@
+name: Mangachi build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply patch if present
+        run: |
+          if [ -f mangachi-patch.zip ]; then
+            unzip -o mangachi-patch.zip
+            rm mangachi-patch.zip
+            git config user.name "mangachi-bot"
+            git config user.email "mangachi-bot@users.noreply.github.com"
+            git add -A
+            git commit -m "Apply Mangachi patch"
+            git push
+          else
+            echo "No patch file found, building as is."
+          fi
+
+      - name: Setup Android SDK
+        run: |
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "build-tools;35.0.0"
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Copy CI gradle.properties
+        run: |
+          mkdir -p ~/.gradle
+          cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Build APK
+        run: ./gradlew assembleStandardNightly
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mangachi-APK
+          path: app/build/outputs/apk/standard/nightly/*.apk
