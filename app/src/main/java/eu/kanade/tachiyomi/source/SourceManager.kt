@@ -52,6 +52,10 @@ class SourceManager(
                             //registerStubSource(it)
                         }
                     }
+                    yokai.core.sites.CustomSiteManager.getAll(context).forEach {
+                        val custom = yokai.core.sites.CustomSiteSource(it)
+                        mutableMap[custom.id] = custom
+                    }
                     sourcesMapFlow.value = mutableMap
                 }
         }
@@ -65,6 +69,17 @@ class SourceManager(
 //                    }
 //                }
 //        }
+    }
+
+    /** Re-reads the sites the user added by link, and registers them as sources. */
+    fun reloadCustomSources() {
+        val map = ConcurrentHashMap<Long, Source>(sourcesMapFlow.value)
+        map.entries.removeAll { it.value is yokai.core.sites.CustomSiteSource }
+        yokai.core.sites.CustomSiteManager.getAll(context).forEach {
+            val custom = yokai.core.sites.CustomSiteSource(it)
+            map[custom.id] = custom
+        }
+        sourcesMapFlow.value = map
     }
 
     fun get(sourceKey: Long): Source? {

@@ -35,9 +35,9 @@ import yokai.util.lang.getString
 class CoverCache(val context: Context) {
 
     companion object {
-        private const val COVERS_DIR = "covers"
-        private const val CUSTOM_COVERS_DIR = "covers/custom"
-        private const val ONLINE_COVERS_DIR = "online_covers"
+        private val COVERS_DIR = "covers" + yokai.core.profile.ProfileManager.dirSuffix
+        private val CUSTOM_COVERS_DIR = "covers" + yokai.core.profile.ProfileManager.dirSuffix + "/custom"
+        private val ONLINE_COVERS_DIR = "online_covers" + yokai.core.profile.ProfileManager.dirSuffix
     }
 
     private val getManga: GetManga by injectLazy()

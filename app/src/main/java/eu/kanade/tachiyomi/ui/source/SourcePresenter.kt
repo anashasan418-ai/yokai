@@ -138,7 +138,7 @@ class SourcePresenter(
         val hiddenCatalogues = preferences.hiddenSources().get()
 
         return sourceManager.getCatalogueSources()
-            .filter { it.lang in languages || it.id == LocalSource.ID }
+            .filter { it.lang in languages || it.id == LocalSource.ID || it is yokai.core.sites.CustomSiteSource }
             .filterNot { it.id.toString() in hiddenCatalogues }
             .sortedBy { "(${it.lang}) ${it.name}" }
     }

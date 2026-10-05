@@ -1,6 +1,11 @@
 package eu.kanade.tachiyomi.ui.source
 
 import android.app.Activity
+import android.text.InputType
+import android.widget.EditText
+import android.widget.FrameLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import android.os.Build
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -68,6 +73,8 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.parcelize.Parcelize
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import yokai.domain.base.BasePreferences
 import yokai.domain.base.BasePreferences.ExtensionInstaller
@@ -687,6 +694,40 @@ class BrowseController :
         }
     }
 
+    private fun showAddSiteDialog() {
+        val ctx = activity ?: return
+        val input = EditText(ctx).apply {
+            hint = "https://example.com"
+            inputType = InputType.TYPE_TEXT_VARIATION_URI
+            setSingleLine()
+        }
+        val pad = (20 * ctx.resources.displayMetrics.density).toInt()
+        val container = FrameLayout(ctx).apply {
+            setPadding(pad, pad / 2, pad, 0)
+            addView(input)
+        }
+        MaterialAlertDialogBuilder(ctx)
+            .setTitle("إضافة موقع")
+            .setMessage("الصق رابط الموقع وسيُحفظ كخيار تصفح")
+            .setView(container)
+            .setPositiveButton("إضافة") { _, _ ->
+                val link = input.text.toString()
+                viewScope.launch {
+                    try {
+                        val site = yokai.core.sites.CustomSiteManager.detect(link)
+                        yokai.core.sites.CustomSiteManager.add(ctx, site)
+                        Injekt.get<eu.kanade.tachiyomi.source.SourceManager>().reloadCustomSources()
+                        presenter.updateSources()
+                        android.widget.Toast.makeText(ctx, "تمت إضافة ${site.name}", android.widget.Toast.LENGTH_LONG).show()
+                    } catch (e: Exception) {
+                        android.widget.Toast.makeText(ctx, e.message ?: "تعذرت إضافة الموقع", android.widget.Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
     private fun performGlobalSearch(query: String) {
         router.pushController(GlobalSearchController(query).withFadeTransaction())
     }
@@ -709,6 +750,7 @@ class BrowseController :
             R.id.action_sources_settings -> {
                 router.pushController(SettingsBrowseController().withFadeTransaction())
             }
+            R.id.action_add_site -> showAddSiteDialog()
             else -> return super.onOptionsItemSelected(item)
         }
         return true

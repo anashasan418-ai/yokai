@@ -45,7 +45,7 @@ fun appModule(app: Application) = module {
         AndroidSqliteDriver(
             schema = Database.Schema,
             context = app,
-            name = "tachiyomi.db",
+            name = yokai.core.profile.ProfileManager.dbName,
             // factory = if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //     // Support database inspector in Android Studio
             //     FrameworkSQLiteOpenHelperFactory()

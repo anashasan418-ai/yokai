@@ -110,6 +110,8 @@ open class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.F
             if (packageName != process) WebView.setDataDirectorySuffix(process)
         }
 
+        yokai.core.profile.ProfileManager.init(this)
+
         startKoin {
             modules(preferenceModule(this@App), appModule(this@App), domainModule())
         }

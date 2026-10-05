@@ -44,6 +44,24 @@ class SettingsMainController : SettingsLegacyController(), FloatingSearchInterfa
         val tintColor = context.getResourceColor(R.attr.colorSecondary)
 
         preference {
+            iconRes = R.drawable.ic_library_outline_24dp
+            iconTint = tintColor
+            title = "المكتبة الحالية: ${yokai.core.profile.ProfileManager.current}"
+            summary = "اضغط للتبديل بين المكتبة A والمكتبة B"
+            onClick {
+                val target = if (yokai.core.profile.ProfileManager.isB) "A" else "B"
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(context)
+                    .setTitle("التبديل إلى المكتبة $target")
+                    .setMessage("لكل مكتبة مانجاتها وسجلها ومواقعها الخاصة. سيُعاد تشغيل التطبيق الآن.")
+                    .setPositiveButton("تبديل") { _, _ ->
+                        yokai.core.profile.ProfileManager.switchTo(context.applicationContext, target)
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+            }
+        }
+
+        preference {
             iconRes = R.drawable.ic_tune_24dp
             iconTint = tintColor
             titleRes = MR.strings.general
