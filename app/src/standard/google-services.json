@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:636318130901:android:388d6d443528368657f85c",
         "android_client_info": {
-          "package_name": "eu.kanade.tachiyomi.nightlyYokai"
+          "package_name": "app.mangachi.reader"
         }
       },
       "oauth_client": [],
