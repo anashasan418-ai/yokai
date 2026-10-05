@@ -27,7 +27,7 @@ fun runCommand(command: String): String {
 }
 
 @Suppress("PropertyName")
-val _versionName = "1.10.3"
+val _versionName = "1.10.2"
 val betaCount by lazy {
     val betaTags = runCommand("git tag -l --sort=refname v${_versionName}-b*")
 
@@ -49,8 +49,8 @@ val supportedAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 
 android {
     defaultConfig {
-        applicationId = "eu.kanade.tachiyomi"
-        versionCode = 162
+        applicationId = "app.mangachi.reader"
+        versionCode = 161
         versionName = _versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
@@ -107,7 +107,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks.add("release")
             versionNameSuffix = "-r${commitCount}"
-            applicationIdSuffix = ".nightlyYokai"
+            applicationIdSuffix = ""
         }
     }
 
@@ -126,7 +126,7 @@ android {
 
     productFlavors {
         create("standard") {
-            buildConfigField("Boolean", "INCLUDE_UPDATER", "true")
+            buildConfigField("Boolean", "INCLUDE_UPDATER", "false")
             dimension = "default"
         }
         create("dev") {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Yōkai</string>
+    <string name="app_name" translatable="false">Mangachi</string>
     <string name="app_short_name" translatable="false">Yōkai</string>
     <string name="app_normalized_name" translatable="false">Yokai</string>
 
