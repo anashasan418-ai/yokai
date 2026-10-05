@@ -114,10 +114,6 @@ class CustomSiteSource(private val site: CustomSite) : ParsedHttpSource() {
         return manga
     }
 
-    private fun SManga.setUrlWithoutDomain(absolute: String) {
-        url = absolute.removePrefix(baseUrl).ifEmpty { "/" }
-    }
-
     private fun imageUrl(img: Element): String? {
         val attrs = listOf("abs:data-src", "abs:data-lazy-src", "abs:data-cfsrc", "abs:src")
         return attrs.map { img.attr(it) }.firstOrNull { it.isNotBlank() && !it.startsWith("data:") }
